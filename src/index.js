@@ -21,6 +21,10 @@ class Request extends React.Component {
     this.performRequest(this.props);
   }
   componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(this.props) === JSON.stringify(nextProps)) {
+      return;
+    }
+
     this.request.abort();
     this.performRequest(nextProps);
   }
@@ -137,7 +141,7 @@ Request.propTypes = {
   withCredentials: React.PropTypes.bool,
   buffer: React.PropTypes.bool,
   attach: React.PropTypes.array,
-  fieldss: React.PropTypes.array,
+  fields: React.PropTypes.array,
   onRequest: React.PropTypes.func,
 };
 
