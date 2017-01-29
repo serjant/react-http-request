@@ -25,6 +25,10 @@ class Request extends React.Component {
       return;
     }
 
+    this.setState({
+      loading: true,
+    })
+
     this.request.abort();
     this.performRequest(nextProps);
   }
