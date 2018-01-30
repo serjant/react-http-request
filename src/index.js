@@ -1,5 +1,6 @@
 import React from 'react';
 import request from 'superagent';
+import PropTypes from 'prop-types';
 
 class Request extends React.Component {
 
@@ -117,7 +118,7 @@ class Request extends React.Component {
 
   printLog(props, res) {
     if (props.verbose && res) {
-      console.log(res);
+      console.log(res); // eslint-disable-line no-console
     }
   }
 
@@ -127,28 +128,28 @@ class Request extends React.Component {
 }
 
 Request.propTypes = {
-  children: React.PropTypes.func,
-  method: React.PropTypes.string.isRequired,
-  type: React.PropTypes.string,
-  accept: React.PropTypes.string,
-  url: React.PropTypes.string.isRequired,
-  timeout: React.PropTypes.number,
-  verbose: React.PropTypes.bool,
-  query: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.object,
+  children: PropTypes.func,
+  method: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  accept: PropTypes.string,
+  url: PropTypes.string.isRequired,
+  timeout: PropTypes.number,
+  verbose: PropTypes.bool,
+  query: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
   ]),
-  send: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.object,
+  send: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
   ]),
-  headers: React.PropTypes.object,
-  auth: React.PropTypes.object,
-  withCredentials: React.PropTypes.bool,
-  buffer: React.PropTypes.bool,
-  attach: React.PropTypes.array,
-  fields: React.PropTypes.array,
-  onRequest: React.PropTypes.func,
+  headers: PropTypes.object,
+  auth: PropTypes.object,
+  withCredentials: PropTypes.bool,
+  buffer: PropTypes.bool,
+  attach: PropTypes.array,
+  fields: PropTypes.array,
+  onRequest: PropTypes.func,
 };
 
 export default Request;
