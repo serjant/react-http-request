@@ -2,26 +2,62 @@ import React from 'react';
 import request from 'superagent';
 import PropTypes from 'prop-types';
 
-class Request extends React.Component {
+export default class Request extends React.Component {
 
   static defaultProps = {
     method: 'get',
-  }
+  };
 
-  constructor(props) {
-    super(props);
-    this.request = null;
-    this.state = {
-      error: null,
-      result: null,
-      loading: true,
-    };
-  }
+  static propTypes = {
+    children: PropTypes.func,
+    method: PropTypes.string.isRequired,
+    type: PropTypes.string,
+    accept: PropTypes.string,
+    url: PropTypes.string.isRequired,
+    timeout: PropTypes.number,
+    verbose: PropTypes.bool,
+    query: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object,
+    ]),
+    send: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object,
+    ]),
+    headers: PropTypes.object,
+    auth: PropTypes.object,
+    withCredentials: PropTypes.bool,
+    buffer: PropTypes.bool,
+    attach: PropTypes.array,
+    fields: PropTypes.array,
+    onRequest: PropTypes.func,
+  };
 
-  componentWillMount() {
+  request = null;
+
+  state = {
+    error: null,
+    result: null,
+    loading: true,
+  };
+
+  componentDidMount() {
     this.performRequest(this.props);
   }
-  componentWillReceiveProps(nextProps) {
+
+  componentWillReceiveProps(...params) {
+    this.willReceiveProps(...params);
+  }
+
+  UNSAFE_componentWillReceiveProps(...params) {
+    this.willReceiveProps(...params);
+  }
+
+  componentWillUnmount() {
+    this.request.abort();
+  }
+
+  willReceiveProps = nextProps => {
     if (JSON.stringify(this.props) === JSON.stringify(nextProps)) {
       return;
     }
@@ -34,10 +70,6 @@ class Request extends React.Component {
 
     this.request.abort();
     this.performRequest(nextProps);
-  }
-
-  componentWillUnmount() {
-    this.request.abort();
   }
 
   performRequest(props) {
@@ -102,15 +134,19 @@ class Request extends React.Component {
     }
 
     this.request
-      .end((error, result) => {
-        if (error || !result.ok) {
-          this.printLog(props, error);
-        } else {
-          this.printLog(props, result);
-        }
+      .then(result => {
+        this.printLog(props, result);
+        this.setState({
+          error: null,
+          result,
+          loading: false,
+        });
+      })
+      .catch(error => {
+        this.printLog(props, error);
         this.setState({
           error,
-          result,
+          result: null,
           loading: false,
         });
       });
@@ -126,30 +162,3 @@ class Request extends React.Component {
     return this.props.children(this.state);
   }
 }
-
-Request.propTypes = {
-  children: PropTypes.func,
-  method: PropTypes.string.isRequired,
-  type: PropTypes.string,
-  accept: PropTypes.string,
-  url: PropTypes.string.isRequired,
-  timeout: PropTypes.number,
-  verbose: PropTypes.bool,
-  query: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]),
-  send: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ]),
-  headers: PropTypes.object,
-  auth: PropTypes.object,
-  withCredentials: PropTypes.bool,
-  buffer: PropTypes.bool,
-  attach: PropTypes.array,
-  fields: PropTypes.array,
-  onRequest: PropTypes.func,
-};
-
-export default Request;
