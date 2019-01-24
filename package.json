@@ -1,6 +1,6 @@
 {
   "name": "react-http-request",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0",
   "description": "React component exposes network request functionality",
   "main": "lib/index.js",
   "scripts": {
